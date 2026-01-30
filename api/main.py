@@ -48,5 +48,5 @@ def analyze(req: AnalyzeRequest):
     # if "firmware" not in req.artifact_manifest:
     #     raise HTTPException(status_code=400, detail="Missing required artifact type: firmware")
 
-    run_analysis.delay(req.model_dump())
+    #run_analysis.delay(req.model_dump())
     return {"status": "accepted", "asset_id": req.asset_id}
