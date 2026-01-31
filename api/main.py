@@ -48,5 +48,39 @@ def analyze(req: AnalyzeRequest):
     # if "firmware" not in req.artifact_manifest:
     #     raise HTTPException(status_code=400, detail="Missing required artifact type: firmware")
 
-    #run_analysis.delay(req.model_dump())
+    # run_analysis.delay(req.model_dump())
+
+    asset_id = req["asset_id"]
+    callback_url = req["callback_url"]
+    callback_token = req["callback_token"]
+    manifest = req.get("artifact_manifest", {})
+
+    with tempfile.TemporaryDirectory(prefix=f"ngvd_{asset_id}_") as workdir:
+        local_paths = download_artifacts(manifest, workdir)
+
+        # TODO: invoke our tools from CLI
+        findings = [{
+            "cwe": "CWE-787",
+            "message": "Example finding",
+            "uri": "example.c",
+            "startLine": 10,
+            "startColumn": 5,
+        }]
+
+        sarif = _mock_build_sarif(
+            SETTINGS.analyzer_name,
+            SETTINGS.analyzer_version,
+            findings
+        )
+
+        headers = {
+            "Content-Type": "application/json",
+            "X-Callback-Token": callback_token,
+            "X-Analyzer-Name": SETTINGS.analyzer_name,
+        }
+
+        with httpx.Client(timeout=60.0) as client:
+            r = client.post(callback_url, headers=headers, json=sarif)
+            r.raise_for_status()
+
     return {"status": "accepted", "asset_id": req.asset_id}
