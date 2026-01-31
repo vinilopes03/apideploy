@@ -116,7 +116,7 @@ def analyze(req: AnalyzeRequest):
     }
     import httpx
     with httpx.Client(timeout=60.0) as client:
-        r = client.post(callback_url, headers=headers, json=sarif)
+        r = client.post(str(callback_url), headers=headers, json=sarif)
         r.raise_for_status()
     # run_analysis.delay(req.model_dump())
     return {"status": "accepted", "asset_id": asset_id}
