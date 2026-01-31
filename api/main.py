@@ -50,10 +50,10 @@ def analyze(req: AnalyzeRequest):
 
     # run_analysis.delay(req.model_dump())
 
-    asset_id = req["asset_id"]
-    callback_url = req["callback_url"]
-    callback_token = req["callback_token"]
-    manifest = req.get("artifact_manifest", {})
+    asset_id = req.asset_id
+    callback_url = req.callback_url
+    callback_token = req.callback_token
+    manifest = req.artifact_manifest
 
     with tempfile.TemporaryDirectory(prefix=f"ngvd_{asset_id}_") as workdir:
         local_paths = download_artifacts(manifest, workdir)
