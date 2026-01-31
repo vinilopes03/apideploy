@@ -3,6 +3,9 @@ from fastapi import status
 from fastapi.responses import JSONResponse
 from models import SETTINGS, AnalyzeRequest
 import redis
+import tempfile
+import httpx
+from artifacts import download_artifacts
 
 app = FastAPI(title=f"{SETTINGS.analyzer_name} analyzer", version=SETTINGS.analyzer_version)
 
