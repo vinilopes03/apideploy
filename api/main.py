@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi import status
 from fastapi.responses import JSONResponse
-from tasks import run_analysis
 from models import SETTINGS, AnalyzeRequest
 import redis
 
